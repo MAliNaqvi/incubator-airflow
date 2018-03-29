@@ -39,16 +39,22 @@ attack. Creating a new user has to be done via a Python REPL on the same machine
     Type "help", "copyright", "credits" or "license" for more information.
     >>> import airflow
     >>> from airflow import models, settings
+    >>> from flask_bcrypt import generate_password_hash
     >>> from airflow.contrib.auth.backends.password_auth import PasswordUser
     >>> user = PasswordUser(models.User())
     >>> user.username = 'new_user_name'
     >>> user.email = 'new_user_email@example.com'
-    >>> user.password = 'set_the_password'
+    >>> user._password = generate_password_hash('set_the_password')
     >>> session = settings.Session()
     >>> session.add(user)
     >>> session.commit()
     >>> session.close()
     >>> exit()
+
+For python 3, the generated hash has to be decoded to:
+
+.. code-block:: bash
+    >>> user._password = generate_password_hash('set_the_password').decode('utf-8')
 
 LDAP
 ''''
